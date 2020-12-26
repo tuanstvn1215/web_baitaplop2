@@ -1,0 +1,135 @@
+.details {
+    background-color: white;
+    border          : 1px solid gainsboro;
+    margin          : 0 auto;
+    display         : flex;
+    flex-direction  : row;
+    justify-content : center;
+}
+
+.details-left {
+    border-right: 1px solid gainsboro;
+    padding     : 5px;
+    width       : 130px;
+    height      : 50vh;
+
+}
+
+.small-img {
+    width: 100%;
+}
+
+.small-img-item {
+    margin: 5px;
+}
+
+.small-img img {
+
+    width: 100%;
+}
+
+.small-img-item:hover {
+    outline   : 1px solid black;
+    transform : scale(1.1);
+    transition: transform 100ms;
+}
+
+.details-center {
+    border-right: 1px solid gainsboro;
+    padding     : 5px;
+    width       : 410px;
+    height      : 70vh;
+
+}
+
+.img {
+    width: 100%;
+}
+
+.img img {
+    width: 100%;
+}
+
+.details-right {
+    padding: 5px;
+    width  : 600px;
+    height : 400px;
+
+    display        : flex;
+    justify-content: space-between;
+    flex-direction : column;
+}
+
+.content-header {
+    font-size  : xx-large;
+    font-weight: 100;
+}
+
+.produce-title {
+
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    color      : rgb(197, 79, 0);
+    font-weight: 400;
+    font-size  : 50px;
+}
+
+.produce-price {
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    color      : rgb(236, 96, 3);
+    font-weight: 400;
+    font-size  : 20px;
+}
+
+.Produce-number input {
+    height    : 30px;
+    font-size : 20px;
+    text-align: center;
+}
+
+input:focus {
+    outline: none;
+}
+
+.content-buttons .number {
+    width: 35px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin            : 0;
+}
+
+/* Firefox */
+input[type=number] {
+
+    -moz-appearance: textfield;
+}
+
+.Produce-number {
+    display: flex;
+}
+
+.Produce-number .span {
+    position        : relative;
+    background-color: rgb(145, 145, 145);
+    height          : 30px;
+    width           : 30px;
+    display         : flex;
+    justify-content : center;
+}
+
+
+.Produce-number .span:hover {
+    cursor          : pointer;
+    background-color: rgb(95, 95, 95);
+    height          : 30px;
+    width           : 30px;
+}
+
+.Produce-number .span div {
+    position : absolute;
+    font-size: 30px;
+    height   : 30px;
+    top      : -9px;
+}

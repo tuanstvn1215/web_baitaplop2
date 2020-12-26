@@ -14,3 +14,7 @@ try {
 } catch (Throwable $th) {
     echo $th->getMessage();
 }
+function alert($msg)
+{
+    echo "<script type='text/javascript'>alert('$msg');</script>";
+}

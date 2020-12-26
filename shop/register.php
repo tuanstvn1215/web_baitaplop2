@@ -52,13 +52,6 @@ if ($err['Email'] === []) {
     }
 }
 
-// if ($err['SoDienThoai'] === []) {
-//     if (!filter_var($_POST['SoDienThoai'], FILTER_VALIDATE_INT)) {
-//         $i++;
-//         array_push($err['SoDienThoai'], 'số điện thoại chỉ bao gồm số');
-//     }
-// }
-
 
 $querry_string = 'SELECT MSKH FROM khachhang WHERE MSKH= ?';
 $statment = $conn->prepare($querry_string);
@@ -85,11 +78,16 @@ if ($i != 0) {
 }
 echo "<script type='text/javascript'>alert('Đăng kí thành công');</script>";
 $_SESSION['MSKH'] = $_POST['MSKH'];
-header('Location: ' . host . '/shop/index.php');
-$querry_string = 'INSERT INTO khachhang VALUES (?,?,?,?,?,?)';
-$statment = $conn->prepare($querry_string);
-$statment->bind_param('ssssss', $_POST['MSKH'], $_POST['HoTenKH'], $_POST['Email'], $_POST['DiaChi'], $_POST['SoDienThoai'], $_POST['MatKhau']);
-$statment->execute();
+try {
+    $querry_string = 'INSERT INTO khachhang VALUES (?,?,?,?,?,?)';
+    $statment = $conn->prepare($querry_string);
+    $_POST['MatKhau'] = password_hash($_POST['MatKhau'], PASSWORD_BCRYPT);
+    $statment->bind_param('ssssss', $_POST['MSKH'], $_POST['HoTenKH'], $_POST['Email'], $_POST['DiaChi'], $_POST['SoDienThoai'], $_POST['MatKhau']);
+    $statment->execute();
+    header('Location: ' . host . '/shop/index.php');
+} catch (Throwable $th) {
+    $th->getMessage();
+}
 label_endpost:; ?>
 
 <!DOCTYPE html>
@@ -123,7 +121,7 @@ label_endpost:; ?>
                     <input type="text" id="MSKH" class="form-input" placeholder="B1704786" value="<?= isset($values['MSKH']) ? $values['MSKH'] : '' ?>" name="MSKH">
                     <?php if (isset($err['MSKH'])) : ?>
                         <div class='err'>
-                            <?= join($err['MSKH']) ?>
+                            <?= join(', ', $err['MSKH']) ?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -133,7 +131,7 @@ label_endpost:; ?>
                     <input type="password" id="password" class="form-input" placeholder="************" value="<?= isset($values['MatKhau']) ? $values['MatKhau'] : '' ?>" name="MatKhau">
                     <?php if (isset($err['MatKhau'])) : ?>
                         <div class='err'>
-                            <?= join($err['MatKhau']) ?>
+                            <?= join(', ', $err['MatKhau']) ?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -142,7 +140,7 @@ label_endpost:; ?>
                     <input type="password" id="re-password" class="form-input" placeholder="************" value="<?= isset($values['re-MatKhau']) ? $values['re-MatKhau'] : '' ?>" name='re-MatKhau'>
                     <?php if (isset($err['re-MatKhau'])) : ?>
                         <div class='err'>
-                            <?= join($err['re-MatKhau']) ?>
+                            <?= join(', ', $err['re-MatKhau']) ?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -151,7 +149,7 @@ label_endpost:; ?>
                     <input type="text" id="name" class="form-input" placeholder="Trần Anh Tuấn" value="<?= isset($values['HoTenKH']) ? $values['HoTenKH'] : '' ?>" name="HoTenKH">
                     <?php if (isset($err['HoTenKH'])) : ?>
                         <div class='err'>
-                            <?= join($err['HoTenKH']) ?>
+                            <?= join(', ', $err['HoTenKH']) ?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -160,7 +158,7 @@ label_endpost:; ?>
                     <input type="email" id="email" class="form-input" placeholder="Ex: johndoe@email.com" value="<?= isset($values['Email']) ? $values['Email'] : '' ?>" name="Email">
                     <?php if (isset($err['Email'])) : ?>
                         <div class='err'>
-                            <?= join($err['Email']) ?>
+                            <?= join(', ', $err['Email']) ?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -169,7 +167,7 @@ label_endpost:; ?>
                     <input type="number" id="number" class="form-input" placeholder="0356788555" value="<?= isset($values['SoDienThoai']) ? $values['SoDienThoai'] : ''  ?>" name="SoDienThoai">
                     <?php if (isset($err['SoDienThoai'])) : ?>
                         <div class='err'>
-                            <?= join($err['SoDienThoai']) ?>
+                            <?= join(', ', $err['SoDienThoai']) ?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -178,7 +176,7 @@ label_endpost:; ?>
                     <input type="text" id="DiaChi" class="form-input" placeholder="1 3/2 tp.cần thơ" value="<?= isset($values['DiaChi']) ? $values['DiaChi'] : ''  ?>" name="DiaChi">
                     <?php if (isset($err['DiaChi'])) : ?>
                         <div class='err'>
-                            <?= join($err['DiaChi']) ?>
+                            <?= join(', ', $err['DiaChi']) ?>
                         </div>
                     <?php endif ?>
                 </div>

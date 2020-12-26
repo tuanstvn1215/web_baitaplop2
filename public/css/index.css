@@ -1,0 +1,111 @@
+body {
+    background-color: rgb(236, 235, 235);
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.header-background {
+
+    position  : sticky;
+    background: white;
+    box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, .1);
+}
+
+.header__header-top {
+    margin         : 0px;
+    display        : flex;
+    justify-content: space-between;
+}
+
+.header-top__left {}
+
+.header__header-bottom {
+    display        : flex;
+    flex-direction : row;
+    justify-content: space-between;
+}
+
+.header-bottom__left {
+    display: flex;
+
+}
+
+.header-bottom__right {
+    display: flex;
+}
+
+.header-bottom__index-icon {
+    width: 60px;
+}
+
+.header-bottom__index-icon img {
+    width: 100%;
+}
+
+.main {
+    margin-top: 30px;
+}
+
+.produces__header {
+
+    background-color: rgb(205, 205, 206);
+    margin-bottom   : 30px;
+
+
+}
+
+.produces__produce {
+    padding: 5px;
+
+}
+
+.produce__inner {
+    height          : 300px;
+    padding         : 1px;
+    background-color: white;
+    box-shadow      : 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, .1);
+}
+
+.produce__inner:hover {
+    transform : translateY(-3px);
+    transition: transform 100ms;
+}
+
+.produce__image img {
+    padding: 0px;
+    width  : 100%;
+}
+
+.produce__name {
+    text-shadow: 1px 1px 1px #d4d3d3;
+    color      : rgb(46, 46, 46);
+    white-space: nowrap;
+    width      : 100%;
+    overflow   : hidden;
+
+
+    text-overflow: ellipsis;
+}
+
+.produce__detail {
+    text-shadow: 1px 1px 1px #d4d3d3;
+    color      : rgb(46, 46, 46);
+    white-space: nowrap;
+    max-lines  : 2;
+    width      : 100%;
+
+    overflow     : hidden;
+    text-overflow: ellipsis;
+
+}
+
+.produce__price {
+    color        : orangered;
+    white-space  : nowrap;
+    width        : 100%;
+    overflow     : hidden;
+    text-overflow: ellipsis;
+
+}
