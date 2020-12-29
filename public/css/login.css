@@ -1,17 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 
-:root {
-    --primary  : #08aeea;
-    --secondary: #13D2B8;
-    --purple   : #bd93f9;
-    --pink     : #ff6bcb;
-    --blue     : #8be9fd;
-    --gray     : #333;
-    --font     : "Roboto", sans-serif;
-    --gradient : linear-gradient(40deg, #ff6ec4, #7873f5);
-    --shadow   : 0 0 15px 0 rgba(0, 0, 0, 0.05);
-}
 
 *,
 *:before,
@@ -19,15 +8,14 @@
     box-sizing: border-box;
 }
 
-html {
-    font-size: 62.5%;
-}
+html {}
 
 body {
+    background-color: gainsboro;
+
     font-family: var(--font);
-    font-size  : 1.4rem;
     overflow-x : hidden;
-    font-weight: 300;
+
 }
 
 img {
@@ -36,7 +24,7 @@ img {
 }
 
 a {
-    color          : black;
+
     text-decoration: none;
 }
 
@@ -139,11 +127,14 @@ button {
 }
 
 .signup {
-    margin               : auto;
-    width                : 80vw;
-    max-width            : 1200px;
-    height               : 100vh;
-    background-color     : white;
+    margin          : auto;
+    margin-top      : 30px;
+    box-shadow      : gainsboro;
+    width           : 80vw;
+    max-width       : 1200px;
+    height          : 100vh;
+    background-color: white;
+
     position             : relative;
     z-index              : 2;
     border-radius        : 40px;

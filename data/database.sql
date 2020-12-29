@@ -18,6 +18,7 @@ CREATE TABLE HangHoa
 	MaNhom char(23) not null,
 	Hinh varchar(1000) not null,
 	MoTaHH varchar(1000),
+	NgayThem datetime DEFAULT NOW(),
 	CHECK(Gia>=0 and SoLuongHang>=0),
 	CONSTRAINT fk_NhomHangHoa FOREIGN KEY (MaNhom) REFERENCES NhomHangHoa(MaNhom)
 

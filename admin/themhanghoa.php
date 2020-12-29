@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST['MoTaHH'] = json_encode($arrMoTaHH, JSON_UNESCAPED_UNICODE);
         var_dump(json_decode($_POST['MoTaHH'], true));
         try {
-            $querry_string = 'INSERT INTO hanghoa VALUES (?,?,?,?,?,?,?)';
+            $querry_string = 'INSERT INTO hanghoa(MSHH,TenHH,Gia,SoLuongHang,MaNhom,Hinh,MoTaHH) VALUES (?,?,?,?,?,?,?)';
             $statment = $conn->prepare($querry_string);
             $statment->bind_param('sssssss', $_POST['MSHH'], $_POST['TenHH'], $_POST['Gia'], $_POST['SoLuongHang'], $_POST['MaNhom'], $_POST['Hinh'], $_POST['MoTaHH']);
             $statment->execute();
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             //throw $th;
         }
 
-        // header('Location: ' . host . '/admin/tatcahanghoa.php');
+        header('Location: ' . host . '/admin/tatcahanghoa.php');
     } catch (Exception $ex) {
         alert($ex->getMessage());
         echo $ex->getTraceAsString();
@@ -66,7 +66,7 @@ $querry_string = "SELECT * FROM nhomhanghoa";
 $statment = $conn->prepare($querry_string);
 $statment->execute();
 $NhomHangHoa = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
-var_dump($NhomHangHoa);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
