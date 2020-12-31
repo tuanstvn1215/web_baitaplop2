@@ -1,15 +1,27 @@
 <?php
 require_once '../config.php';
-if (!isset($_GET['id']))
-    $_GET['page'] = 0;
-$querry_string = "SELECT * FROM hanghoa where mshh = ?";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    var_dump($_POST);
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    array_push($_SESSION['cart'], $_POST);
+    header('Location: ' . host . '/shop/giohang.php');
+}
 
+$querry_string = "SELECT * FROM nhomhanghoa";
+$statment = $conn->prepare($querry_string);
+$statment->execute();
+$NhomHangHoa = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
+
+$querry_string = "SELECT * FROM hanghoa where mshh = ?";
 $statment = $conn->prepare($querry_string);
 $statment->bind_param('s', $_GET['id']);
 $statment->execute();
 $HangHoa = $statment->get_result()->fetch_assoc();
 $HangHoa['Hinh'] = json_decode($HangHoa['Hinh']);
 $HangHoa['MoTaHH'] = json_decode($HangHoa['MoTaHH']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,189 +43,86 @@ $HangHoa['MoTaHH'] = json_decode($HangHoa['MoTaHH']);
 </head>
 
 <body>
-    <div class="header-background">
-        <div class="container header">
-            <div class="row header__header-top">
-                <div class=" header-top__left">
-                    <a href="#">Tuấn B1704786</a>
-                </div>
-                <div class="header-top__right">
-                    <?php if (isset($_SESSION['MSKH']) || isset($_SESSION['MSNV'])) : ?>
-                        <?php if (isset($_SESSION['MSKH'])) : ?>
-                            <?= "Xin Chào, " . $_SESSION['MSKH'] ?>
-                        <?php else : ?>
-                            <?= "Xin Chào, " . $_SESSION['MSNV'] ?>
-                        <?php endif ?>
-                    <?php else : ?>
-                        <a class="header-top__right__item" href="<?= host . '/shop/register.php' ?>">Đăng Kí</a>
-                        <a class="header-top__right__item" href="<?= host . '/shop/login.php' ?>">Đăng Nhập</a>
-                    <?php endif ?>
-
-                </div>
-            </div>
-            <div class="header__header-bottom">
-                <div class="header-bottom__left">
-                    <a href="<?= host ?>/shop" class="header-bottom__index-icon">
-                        <img src="<?= host ?>/public/img/icon/index.png" alt="">
-                    </a>
-                    <div class="header-bottom__menu">
-                        <a href="<?= host ?>/shop/index.php" class="header-bottom__menu-item">Trang Chủ</a>
-                        <a href="<?= host ?>/shop/thongtin.php" class="header-bottom__menu-item">Thông Tin</a>
-                        <a href="<?= host ?>/shop/giohang.php" class="header-bottom__menu-item">Giỏ Hàng</a>
-                        <a href="<?= host ?>/admin/tatcadonhang.php" class="header-bottom__menu-item">Admin</a>
-
-                    </div>
-
-                </div>
-                <div class="header-bottom__right">
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="details">
-            <div class="details-left">
-                <div class="small-img">
-                    <?php for ($i = 0; $i < count($HangHoa['Hinh']); $i++) : ?>
-                        <div class="small-img-item"> <img onmouseover="change_img(event)" class="small-img-item-inner" src="<?= host . $HangHoa['Hinh'][$i] ?>" alt="">
-                        </div>
-                    <?php endfor ?>
-                </div>
-            </div>
-            <div class="details-center">
-                <div class="img"><img id='main_img' src="<?= host . $HangHoa['Hinh'][0] ?>" alt=""></div>
-            </div>
-            <div class="details-right">
-                <div>
-                    <div class="content-header">
-                        <div class="produce-title">
-                            <?= $HangHoa['TenHH'] ?>
-                        </div>
-                        <div class="produce-price">
-                            <?= $HangHoa['Gia'] ?>
-                        </div>
-                    </div>
-                    <div class="content-main">
-
-                        <div class="content-describes">
-                            <ul class="content-describes-item">
-                                <?php for ($i = 0; $i < count($HangHoa['MoTaHH']); $i++) : ?>
-                                    <li><?= $HangHoa['MoTaHH'][$i] ?></li>
-                                <?php endfor ?>
-                            </ul>
-                        </div>
+    <?php require_once './block/header.php' ?>
+    <form action="<?= host ?>/shop/chitiet.php" method="post">
+        <div class="container mt-5">
+            <div class="details">
+                <div class="details-left">
+                    <div class="small-img">
+                        <?php for ($i = 0; $i < count($HangHoa['Hinh']); $i++) : ?>
+                            <div class="small-img-item"> <img onmouseover="change_img(event)" class="small-img-item-inner" src="<?= host . $HangHoa['Hinh'][$i] ?>" alt="">
+                            </div>
+                        <?php endfor ?>
                     </div>
                 </div>
-                <div class="content-buttons">
-                    <div class="Produce-number">
-                        <div class="span">
-                            <div onclick="Produce_number_minus()" id="Produce-number--">-</div>
+                <div class="details-center">
+                    <div class="img"><img id='main_img' src="<?= host . $HangHoa['Hinh'][0] ?>" alt=""></div>
+                </div>
+                <div class="details-right pl-3">
+                    <div>
+                        <div class="content-header">
+                            <div class="produce-title">
+                                <?= $HangHoa['TenHH'] ?>
+                            </div>
+                            <div class="produce-price">
+                                <?= $HangHoa['Gia'] ?>
+                            </div>
                         </div>
-                        <input class="number" type="number" name="Produce-number" id="Produce-number" min="0">
-                        <div class="span">
-                            <div onclick="Produce_number_plus()" id="Produce-number-+">+</div>
+                        <div class="content-main">
+                            <div class="content-describes">
+                                <ul class="content-describes-item mt-3  ">
+                                    <?php for ($i = 0; $i < count($HangHoa['MoTaHH']); $i++) : ?>
+                                        <li><?= $HangHoa['MoTaHH'][$i] ?></li>
+                                    <?php endfor ?>
+                                </ul>
+                            </div>
                         </div>
+                    </div>
+                    <div class="content-buttons">
+                        <div class="Produce-number">
+                            <div class="span">
+                                <div onclick="Produce_number_minus()" id="Produce-number--">-</div>
+                            </div>
+                            <input name="MSHH" value="<?= $HangHoa['MSHH'] ?>" style="display: none;">
+                            <input name="Hinh" value="<?= $HangHoa['Hinh'][0] ?>" style="display: none;">
+                            <input name="TenHH" value="<?= $HangHoa['TenHH'] ?>" style="display: none;">
+                            <input name="MotaHH" value="<?= $HangHoa['MoTaHH'][0] ?>" style="display: none;">
+                            <input name="Gia" value="<?= $HangHoa['Gia'] ?>" style="display: none;">
+                            <input class="number" type="number" name="Soluong" id="Produce-number" value="1" min="0">
+                            <div class="span">
+                                <div onclick="Produce_number_plus()" id="Produce-number-+">+</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-success ml-5">Thêm vào giỏ hàng</button>
                     </div>
                 </div>
             </div>
         </div>
-        <footer class="bg_footer">
-            <div class="container">
-                <div class="row">
-                    <div class="about_footer">
-                        <div class="footer_title">
-                            <p>VỀ CHÚNG TÔI</p>
-                        </div>
-                        <p>Nếu bạn đang tìm kiếm một trang web để mua và bán hàng trực tuyến thì chúng tôi là một sự lựa chọn hiệu quả dành cho bạn. Bản chất của Shopee là một social ecommerce platform - nền tảng trang web thương mại điện tử tích hợp mạng xã hội</p>
-                        <div class="footer_title">
-                            <p>MẠNG XÃ HỘI</p>
-                        </div>
-                        <ul>
-                            <li><i class="fab fa-facebook-f"></i></li>
-                            <li><i class="fab fa-twitter"></i></li>
-                            <li><i class="fab fa-instagram"></i></li>
-                        </ul>
-                    </div>
-                    <div class="info">
-                        <div class="footer_title">
-                            <p>THANH TOÁN</p>
-                        </div>
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Services</a></li>
-                            <li><a href="#">Signin</a></li>
-                            <li><a href="#">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div class="ourwork">
-                        <div class="footer_title">
-                            <p>DANH MỤC HÀNG</p>
-                        </div>
-                        <ul>
-                            <?php foreach ($NhomHangHoa as $value) : ?>
-                                <li><img src="<?= $value['HinhNhom'] ?>"></li>
-                            <?php endforeach ?>
+    </form>
+    <?php require_once './block/footer.php' ?>
+    <script>
+        function Produce_number_minus() {
+            let Produce_number = document.getElementById('Produce-number')
+            if (!(Produce_number.value = parseInt(Produce_number.value) - 1))
+                Produce_number.value = 1
+        }
 
-                        </ul>
-                    </div>
-                    <div class="contact">
-                        <div class="footer_title">
-                            <p>LIÊN HỆ</p>
-                        </div>
-                        <div class="contact_content">
-                            <div class="contact_icon">
-                                <i class="fa fa-phone"></i>
-                            </div>
-                            <div class="contact_details">
-                                <h4>Số điện thoại</h4>
-                                <p>+84 899016864</p>
-                            </div>
-                            <div class="contact_icon">
-                                <i class="fa fa-envelope"></i>
-                            </div>
-                            <div class="contact_details">
-                                <h4>Địa chỉ Email</h4>
-                                <p>tuanb1704786@gmail.m</p>
-                            </div>
-                            <div class="contact_icon">
-                                <i class="fa fa-location-arrow"></i>
-                            </div>
-                            <div class="contact_details">
-                                <h4>Địa chỉ</h4>
-                                <p>Cần Thơ</p>
+        function Produce_number_plus() {
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <script>
-            function Produce_number_minus() {
-                let Produce_number = document.getElementById('Produce-number')
-                if (!(Produce_number.value = parseInt(Produce_number.value) - 1))
-                    Produce_number.value = 1
-            }
+            let Produce_number = document.getElementById('Produce-number')
+            if (!(Produce_number.value = parseInt(Produce_number.value) + 1))
+                Produce_number.value = 1
 
-            function Produce_number_plus() {
+        }
 
-                let Produce_number = document.getElementById('Produce-number')
-                if (!(Produce_number.value = parseInt(Produce_number.value) + 1))
-                    Produce_number.value = 1
+        var images = document.getElementsByClassName('small-img-item-inner')
 
-            }
-
-            var images = document.getElementsByClassName('small-img-item-inner')
-
-            function change_img(e) {
-                e.target.getAttribute('src')
-                var main_img = document.getElementById('main_img')
-                main_img.setAttribute('src', e.target.getAttribute('src'))
-            }
-        </script>
+        function change_img(e) {
+            e.target.getAttribute('src')
+            var main_img = document.getElementById('main_img')
+            main_img.setAttribute('src', e.target.getAttribute('src'))
+        }
+    </script>
 </body>
 
 </html>

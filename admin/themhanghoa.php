@@ -11,7 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $_POST['MSHH'] = uniqid('');
         $ex_arr = array('0' => 'JPG', '1' => 'PNG', '2' => 'JPEG');
-
+        if (count($names) > 4) {
+            throw new Error('được phép upload tối đa 4 ảnh');
+        }
         for ($i = 0; $i < count($names); $i++) {
             $types[$i] =  pathinfo($names[$i], PATHINFO_EXTENSION);
             if (!in_array(strtoupper($types[$i]), $ex_arr)) {
@@ -66,73 +68,104 @@ $querry_string = "SELECT * FROM nhomhanghoa";
 $statment = $conn->prepare($querry_string);
 $statment->execute();
 $NhomHangHoa = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
-
+$querry_string = "SELECT * FROM chitietdathang where SoDonDH=? ";
+$statment = $conn->prepare($querry_string);
+$statment->bind_param('s', $_GET['SoDonDH']);
+$statment->execute();
+$Dondat = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Thêm hàng hóa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" integrity="sha512-F5QTlBqZlvuBEs9LQPqc1iZv2UMxcVXezbHzomzS6Df4MZMClge/8+gXrKw2fl5ysdk4rWjR0vKS7NNkfymaBQ==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="<?= host ?>/public/css/admin/tatcahanghoa.css">
 </head>
 
 <body>
-    <style>
-        .form {
-            display: flex;
-            flex-direction: column;
+    <div class="warpper">
+        <?php require_once './block/menu.php' ?>
+        <div class="content">
+            <?php require_once './block/navbar.php' ?>
+            <div class="main_content">
+                <form enctype="multipart/form-data" method="POST" action="<?= host ?>/admin/themhanghoa.php">
+                    <div class='form mt-5' style="display:flex;flex-direction: column;justify-content:space-evenly;width:  500px; margin: auto; background-color: white; border: solid 1px gainsboro;padding: 20px;border-radius: 5px;height: 500px;">
+                        <h1 style="text-align: center;">Thêm Hàng Hóa</h1>
+                        <div class="form-item-group">
+                            <label for="">Tên hàng hóa:</label>
+                            <input class="form-input" type="text" placeholder="tên hàng hóa" name="TenHH" required>
+                        </div>
+                        <div class="form-item-group">
+                            <label for="">Giá hàng hóa:</label>
+                            <input class="form-input" type="text" name="Gia" required>
+                        </div>
+                        <div class="form-item-group">
+                            <label for="">Số lượng hàng</label>
+                            <input class="form-input" type="text" name="SoLuongHang" required>
+                        </div>
+                        <div class="form-item-group">
+                            <label for="">Hình ảnh hàng hóa</label>
+                            <input class="form-input" name="Hinh[]" type="file" multiple="multiple" required />
+                        </div>
+                        <div class="form-item-group">
+                            <label for="">Nhóm hàng hóa</label>
+                            <select class="form-select" name="MaNhom" required>
+                                <?php
+                                foreach ($NhomHangHoa as $key => $value) {
+                                    echo '<option value=' . $value['MaNhom'] . '>' . $value['TenNhom'] . ' </option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-item-group">
+                            <label for="">Mô tả hàng hóa</label>
+                            <input type="text" name="MoTaHH" required>
+                        </div>
+                        <div class="form-item-group">
+                            <label for=""></label>
+                            <button class="form-btn btn btn-success" type="submit"> Thêm hàng hóa</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
-        }
-
-        .form-item-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-item-group * {
-            width: 300px;
-        }
-    </style>
-    <form enctype="multipart/form-data" method="POST" action="<?= host ?>/admin/themhanghoa.php">
-        <div class='form'>
-            <div class="form-item-group">
-                <label for="">Tên hàng hóa:</label>
-                <input class="form-input" type="text" placeholder="tên hàng hóa" name="TenHH" required>
-            </div>
-            <div class="form-item-group">
-                <label for="">Giá hàng hóa:</label>
-                <input class="form-input" type="text" name="Gia" required>
-            </div>
-            <div class="form-item-group">
-                <label for="">Số lượng hàng</label>
-                <input class="form-input" type="text" name="SoLuongHang" required>
-            </div>
-            <div class="form-item-group">
-                <label for="">Hình ảnh hàng hóa</label>
-                <input class="form-input" name="Hinh[]" type="file" multiple="multiple" required />
-            </div>
-            <div class="form-item-group">
-                <label for="">Nhóm hàng hóa</label>
-                <select class="form-select" name="MaNhom" required>
-                    <?php
-                    foreach ($NhomHangHoa as $key => $value) {
-                        echo '<option value=' . $value['MaNhom'] . '>' . $value['TenNhom'] . ' </option>';
-                    }
-
-                    ?>
-                </select>
-            </div>
-            <div class="form-item-group">
-                <label for="">Mô tả hàng hóa</label>
-                <input type="text" name="MoTaHH" required>
-            </div>
-            <div class="form-item-group">
-                <label for=""></label>
-                <button class="form-btn" type="submit"> esfes</button>
-            </div>
         </div>
-    </form>
+
+    </div>
+
+    <script>
+        function right_menu() {
+            var right_menu = document.getElementById('right-menu')
+            var menu_content = document.getElementById('menu-content')
+            if (right_menu.classList.contains('right-menu')) {
+                right_menu.classList.replace('right-menu', 'right-menu-hidden')
+                menu_content.classList.add('menu_content-hidden')
+
+            } else {
+                right_menu.classList.replace('right-menu-hidden', 'right-menu')
+                menu_content.classList.remove('menu_content-hidden')
+            }
+        }
+
+        function notification() {
+            var notification = document.getElementById('notification')
+            if (notification.classList.contains('notification')) {
+                notification.classList.replace('notification', 'notification-hidden')
+
+
+            } else {
+                notification.classList.replace('notification-hidden', 'notification')
+            }
+        }
+    </script>
+
 </body>
 
 </html>

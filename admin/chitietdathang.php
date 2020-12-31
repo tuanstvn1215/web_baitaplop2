@@ -1,15 +1,9 @@
 <?php require_once '../config.php';
-$querry_string = "SELECT * FROM dathang ORDER BY NgayDH  DESC ";
+$querry_string = "SELECT * FROM chitietdathang where SoDonDH=? ";
 $statment = $conn->prepare($querry_string);
+$statment->bind_param('s', $_GET['SoDonDH']);
 $statment->execute();
 $Dondat = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $querry_string = "UPDATE dathang SET TrangThai='Đã xử lý' where SoDonDH=?";
-    $statment = $conn->prepare($querry_string);
-    $statment->bind_param('s', $_POST['SoDonDH']);
-    $statment->execute();
-    header('Location: ' . host . '/admin/tatcadonhang.php');
-}
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="content">
             <?php require_once './block/navbar.php' ?>
             <div class="main_content">
+
                 <table class="table-item mt-5">
                     <tr>
                         <th class="table-item-title">
@@ -40,15 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </th>
 
                         <th class="table-item-title">
-                            Mã KH
+                            Mã Hàng Hóa
                         </th>
                         <th class="table-item-title">
-                            Thời gian đặt
+                            Số Lượng
                         </th>
                         <th class="table-item-title">
-                            Trạng thái
-                        </th>
-                        <th colspan="2" class="table-item-title">
+                            Giá
                         </th>
                     </tr>
                     <?php foreach ($Dondat as $item) : ?>
@@ -57,33 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <?= $item['SoDonDH'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['MSKH'] ?>
+                                <?= $item['MSHH'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['NgayDH'] ?>
+                                <?= $item['SoLuong'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['TrangThai'] ?>
+                                <?= $item['GiaDatHang'] ?>
                             </td>
-                            <td class="table-item-btn" class="table-item-details">
-                                <?php if ($item['SoDonDH'] == "đã xử lý") : ?>
-                                    <form action="" method="post">
-                                        <input type="text" style="display: none;" name="SoDonDH" value="<?= $item['SoDonDH'] ?>">
-                                        <button class="btn btn-success btn-sm">Xử lý</button>
-                                    </form>
-                                <?php else : ?>
-                                    <form action="" method="post">
-                                        <input type="text" style="display: none;" name="SoDonDH" value="<?= $item['SoDonDH'] ?>">
-                                        <button disabled=true class="btn btn-success btn-sm">Xử lý</button>
-                                    </form>
-                                <?php endif ?>
 
-
-
-                            </td>
-                            <td class="table-item-btn" class="table-item-details">
-                                <a class="btn btn-primary btn-sm" href="<?= host ?>/admin/chitietdathang.php?SoDonDH=<?= $item['SoDonDH']  ?>">Xem chi tiết</a>
-                            </td>
                         </tr>
                     <?php endforeach ?>
 

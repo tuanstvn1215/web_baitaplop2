@@ -1,15 +1,9 @@
 <?php require_once '../config.php';
-$querry_string = "SELECT * FROM dathang ORDER BY NgayDH  DESC ";
+$querry_string = "SELECT * FROM nhanvien ";
 $statment = $conn->prepare($querry_string);
+
 $statment->execute();
-$Dondat = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $querry_string = "UPDATE dathang SET TrangThai='Đã xử lý' where SoDonDH=?";
-    $statment = $conn->prepare($querry_string);
-    $statment->bind_param('s', $_POST['SoDonDH']);
-    $statment->execute();
-    header('Location: ' . host . '/admin/tatcadonhang.php');
-}
+$Nhavien = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -33,57 +27,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="content">
             <?php require_once './block/navbar.php' ?>
             <div class="main_content">
+                <a class="btn btn-success mt-5 ml-5" href="<?= host ?>/admin/themnhanvien.php">Thêm nhân viên mới</a>
                 <table class="table-item mt-5">
                     <tr>
                         <th class="table-item-title">
-                            Mã Đơn Đặt
+                            Mã Nhân Viên
                         </th>
 
                         <th class="table-item-title">
-                            Mã KH
+                            Tên Nhân Viên
                         </th>
                         <th class="table-item-title">
-                            Thời gian đặt
+                            Chức Vụ
                         </th>
                         <th class="table-item-title">
-                            Trạng thái
+                            Địa Chỉ
                         </th>
-                        <th colspan="2" class="table-item-title">
+                        <th class="table-item-title">
+                            Số Điện Thoại
                         </th>
                     </tr>
-                    <?php foreach ($Dondat as $item) : ?>
+                    <?php foreach ($Nhavien as $item) : ?>
                         <tr>
                             <td class="table-item-details">
-                                <?= $item['SoDonDH'] ?>
+                                <?= $item['MSNV'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['MSKH'] ?>
+                                <?= $item['HoTenNV'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['NgayDH'] ?>
+                                <?= $item['ChucVu'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['TrangThai'] ?>
+                                <?= $item['DiaChi'] ?>
                             </td>
-                            <td class="table-item-btn" class="table-item-details">
-                                <?php if ($item['SoDonDH'] == "đã xử lý") : ?>
-                                    <form action="" method="post">
-                                        <input type="text" style="display: none;" name="SoDonDH" value="<?= $item['SoDonDH'] ?>">
-                                        <button class="btn btn-success btn-sm">Xử lý</button>
-                                    </form>
-                                <?php else : ?>
-                                    <form action="" method="post">
-                                        <input type="text" style="display: none;" name="SoDonDH" value="<?= $item['SoDonDH'] ?>">
-                                        <button disabled=true class="btn btn-success btn-sm">Xử lý</button>
-                                    </form>
-                                <?php endif ?>
-
-
-
+                            <td class="table-item-details">
+                                <?= $item['SoDienThoai'] ?>
                             </td>
-                            <td class="table-item-btn" class="table-item-details">
-                                <a class="btn btn-primary btn-sm" href="<?= host ?>/admin/chitietdathang.php?SoDonDH=<?= $item['SoDonDH']  ?>">Xem chi tiết</a>
-                            </td>
+
                         </tr>
                     <?php endforeach ?>
 

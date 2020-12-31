@@ -1,15 +1,8 @@
 <?php require_once '../config.php';
-$querry_string = "SELECT * FROM dathang ORDER BY NgayDH  DESC ";
+$querry_string = "SELECT * FROM khachhang ";
 $statment = $conn->prepare($querry_string);
 $statment->execute();
-$Dondat = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $querry_string = "UPDATE dathang SET TrangThai='Đã xử lý' where SoDonDH=?";
-    $statment = $conn->prepare($querry_string);
-    $statment->bind_param('s', $_POST['SoDonDH']);
-    $statment->execute();
-    header('Location: ' . host . '/admin/tatcadonhang.php');
-}
+$Khachhang = $statment->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -36,54 +29,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <table class="table-item mt-5">
                     <tr>
                         <th class="table-item-title">
-                            Mã Đơn Đặt
+                            Mã Khách Hàng
                         </th>
 
                         <th class="table-item-title">
-                            Mã KH
+                            Tên Khách Hàng
                         </th>
                         <th class="table-item-title">
-                            Thời gian đặt
+                            Email
                         </th>
                         <th class="table-item-title">
-                            Trạng thái
+                            Địa Chỉ
                         </th>
-                        <th colspan="2" class="table-item-title">
+                        <th class="table-item-title">
+                            Số Điện Thoại
                         </th>
                     </tr>
-                    <?php foreach ($Dondat as $item) : ?>
+                    <?php foreach ($Khachhang as $item) : ?>
                         <tr>
-                            <td class="table-item-details">
-                                <?= $item['SoDonDH'] ?>
-                            </td>
                             <td class="table-item-details">
                                 <?= $item['MSKH'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['NgayDH'] ?>
+                                <?= $item['HoTenKH'] ?>
                             </td>
                             <td class="table-item-details">
-                                <?= $item['TrangThai'] ?>
+                                <?= $item['Email'] ?>
                             </td>
-                            <td class="table-item-btn" class="table-item-details">
-                                <?php if ($item['SoDonDH'] == "đã xử lý") : ?>
-                                    <form action="" method="post">
-                                        <input type="text" style="display: none;" name="SoDonDH" value="<?= $item['SoDonDH'] ?>">
-                                        <button class="btn btn-success btn-sm">Xử lý</button>
-                                    </form>
-                                <?php else : ?>
-                                    <form action="" method="post">
-                                        <input type="text" style="display: none;" name="SoDonDH" value="<?= $item['SoDonDH'] ?>">
-                                        <button disabled=true class="btn btn-success btn-sm">Xử lý</button>
-                                    </form>
-                                <?php endif ?>
-
-
-
+                            <td class="table-item-details">
+                                <?= $item['DiaChi'] ?>
                             </td>
-                            <td class="table-item-btn" class="table-item-details">
-                                <a class="btn btn-primary btn-sm" href="<?= host ?>/admin/chitietdathang.php?SoDonDH=<?= $item['SoDonDH']  ?>">Xem chi tiết</a>
+                            <td class="table-item-details">
+                                <?= $item['SoDienThoai'] ?>
                             </td>
+
                         </tr>
                     <?php endforeach ?>
 
